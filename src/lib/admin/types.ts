@@ -25,7 +25,7 @@ export interface Category {
   _id: string;
   name: string;
   slug: string;
-  image?: string;
+  image?: ProductImageData | string;
   description?: string;
   status: "active" | "inactive";
   sortOrder: number;
@@ -37,10 +37,27 @@ export interface Brand {
   _id: string;
   name: string;
   slug: string;
+  image?: ProductImageData | string;
   logo?: string;
   status: "active" | "inactive";
   createdAt?: string;
   updatedAt?: string;
+}
+
+export function getImageUrl(item: { image?: ProductImageData | string } | { logo?: string }): string {
+  const img = "image" in item ? (item as { image?: ProductImageData | string }).image : undefined;
+  if (!img) {
+    const logo = (item as { logo?: string }).logo;
+    return logo || "";
+  }
+  if (typeof img === "string") return img;
+  return img?.url || "";
+}
+
+export function getImagePublicId(item: { image?: ProductImageData | string }): string | undefined {
+  const img = item.image;
+  if (!img || typeof img === "string") return undefined;
+  return img.publicId;
 }
 
 export interface ProductImageData {
@@ -84,7 +101,7 @@ export interface Banner {
   title: string;
   subtitle?: string;
   slug: string;
-  image: string;
+  image: ProductImageData | string;
   link?: string;
   status: "active" | "inactive";
   sortOrder: number;

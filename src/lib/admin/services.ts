@@ -56,11 +56,11 @@ export function getAdminCategories(params: Record<string, string | number | bool
   return adminApiRequest<Category[]>("/admin/categories", { params });
 }
 
-export function createAdminCategory(body: Record<string, unknown>) {
+export function createAdminCategory(body: Record<string, unknown> | FormData) {
   return adminApiRequest<Category>("/admin/categories", { method: "POST", body });
 }
 
-export function updateAdminCategory(id: string, body: Record<string, unknown>) {
+export function updateAdminCategory(id: string, body: Record<string, unknown> | FormData) {
   return adminApiRequest<Category>(`/admin/categories/${id}`, { method: "PATCH", body });
 }
 
@@ -72,11 +72,11 @@ export function getAdminBrands(params: Record<string, string | number | boolean 
   return adminApiRequest<Brand[]>("/admin/brands", { params });
 }
 
-export function createAdminBrand(body: Record<string, unknown>) {
+export function createAdminBrand(body: Record<string, unknown> | FormData) {
   return adminApiRequest<Brand>("/admin/brands", { method: "POST", body });
 }
 
-export function updateAdminBrand(id: string, body: Record<string, unknown>) {
+export function updateAdminBrand(id: string, body: Record<string, unknown> | FormData) {
   return adminApiRequest<Brand>(`/admin/brands/${id}`, { method: "PATCH", body });
 }
 
@@ -88,11 +88,11 @@ export function getAdminBanners(params: Record<string, string | number | boolean
   return adminApiRequest<Banner[]>("/admin/banners", { params });
 }
 
-export function createAdminBanner(body: Record<string, unknown>) {
+export function createAdminBanner(body: Record<string, unknown> | FormData) {
   return adminApiRequest<Banner>("/admin/banners", { method: "POST", body });
 }
 
-export function updateAdminBanner(id: string, body: Record<string, unknown>) {
+export function updateAdminBanner(id: string, body: Record<string, unknown> | FormData) {
   return adminApiRequest<Banner>(`/admin/banners/${id}`, { method: "PATCH", body });
 }
 

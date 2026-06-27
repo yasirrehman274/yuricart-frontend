@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
+import { ImageIcon, Pencil, Trash2 } from "lucide-react";
 import AdminFilters from "@/components/admin/AdminFilters";
 import AdminPagination from "@/components/admin/AdminPagination";
 import BrandForm from "@/components/admin/BrandForm";
@@ -25,7 +25,7 @@ import {
   getAdminBrands,
   updateAdminBrand,
 } from "@/lib/admin/services";
-import { Brand } from "@/lib/admin/types";
+import { Brand, getImageUrl } from "@/lib/admin/types";
 
 function BrandsPageContent() {
   const searchParams = useSearchParams();
@@ -69,14 +69,14 @@ function BrandsPageContent() {
     loadItems();
   }, [loadItems]);
 
-  async function handleSubmit(values: Record<string, unknown>) {
+  async function handleSubmit(formData: FormData) {
     setSaving(true);
     try {
       if (editing) {
-        await updateAdminBrand(editing._id, values);
+        await updateAdminBrand(editing._id, formData);
         toast({ title: "Brand updated" });
       } else {
-        await createAdminBrand(values);
+        await createAdminBrand(formData);
         toast({ title: "Brand created" });
       }
       setDialogOpen(false);
@@ -139,6 +139,8 @@ function BrandsPageContent() {
         <table className="w-full text-sm">
           <thead className="border-b bg-muted/50 text-left">
             <tr>
+              <th className="px-4 py-3 w-12">#</th>
+              <th className="px-4 py-3 w-16">Image</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Slug</th>
               <th className="px-4 py-3">Status</th>
@@ -147,13 +149,26 @@ function BrandsPageContent() {
           </thead>
           <tbody>
             {loading && Array.from({ length: 4 }).map((_, i) => (
-              <tr key={i}><td colSpan={4} className="px-4 py-3"><Skeleton className="h-6 w-full" /></td></tr>
+              <tr key={i}><td colSpan={6} className="px-4 py-3"><Skeleton className="h-6 w-full" /></td></tr>
             ))}
             {!loading && items.length === 0 && (
-              <tr><td colSpan={4}><EmptyState title="No brands found" /></td></tr>
+              <tr><td colSpan={6}><EmptyState title="No brands found" /></td></tr>
             )}
-            {!loading && items.map((item) => (
+            {!loading && items.map((item, idx) => (
               <tr key={item._id} className="border-b">
+                <td className="px-4 py-3 text-muted-foreground">{(page - 1) * 10 + idx + 1}</td>
+                <td className="px-4 py-3">
+                  <div className="flex size-11 items-center justify-center overflow-hidden rounded-lg border bg-muted">
+                    {(() => {
+                      const url = getImageUrl(item as { image?: Brand["image"] });
+                      return url ? (
+                        <img src={url} alt={item.name} className="size-full object-cover" />
+                      ) : (
+                        <ImageIcon className="size-5 text-muted-foreground" />
+                      );
+                    })()}
+                  </div>
+                </td>
                 <td className="px-4 py-3 font-medium">{item.name}</td>
                 <td className="px-4 py-3 text-muted-foreground">{item.slug}</td>
                 <td className="px-4 py-3"><StatusBadge status={item.status} /></td>

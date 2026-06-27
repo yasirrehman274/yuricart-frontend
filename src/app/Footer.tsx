@@ -7,12 +7,10 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-x-12 gap-y-16 md:col-span-3 lg:grid-cols-6">
           <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
-            <div className="text-2xl font-bold text-center">Yuricart Electronics</div>
+            <div className="text-2xl font-bold text-center">Yuricart</div>
             <div className="mt-7 text-base leading-relaxed text-muted-foreground text-center">
               <p>
-                🏬 Old Nation House, 1st Floor, Shop B16
-                🚒 Opposite Fire Station, Tom Mboya St
-                📍 Nairobi, Kenya
+                🏬 The Bazaar plaza along Moi Avenue, 1st floor A02, Nairobi CBD
               </p>
               <p className="mt-4">
                 <a href="https://wa.me/254768054542"
@@ -311,7 +309,7 @@ export default function Footer() {
         <hr className="mb-10 mt-16 " />
 
         <p className="text-center text-sm text-muted-foreground hidden md:block">
-          © Copyright {new Date().getFullYear()}, All Rights Reserved by Yuricart Electronics
+          © Copyright {new Date().getFullYear()}, All Rights Reserved by Yuricart
         </p>
       </div>
     </footer>

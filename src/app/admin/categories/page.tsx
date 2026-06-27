@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
+import { ImageIcon, Pencil, Trash2 } from "lucide-react";
 import AdminFilters from "@/components/admin/AdminFilters";
 import AdminPagination from "@/components/admin/AdminPagination";
 import CategoryForm from "@/components/admin/CategoryForm";
@@ -25,7 +25,7 @@ import {
   getAdminCategories,
   updateAdminCategory,
 } from "@/lib/admin/services";
-import { Category } from "@/lib/admin/types";
+import { Category, getImageUrl } from "@/lib/admin/types";
 
 function CategoriesPageContent() {
   const searchParams = useSearchParams();
@@ -79,14 +79,14 @@ function CategoriesPageContent() {
     setDialogOpen(true);
   }
 
-  async function handleSubmit(values: Record<string, unknown>) {
+  async function handleSubmit(formData: FormData) {
     setSaving(true);
     try {
       if (editing) {
-        await updateAdminCategory(editing._id, values);
+        await updateAdminCategory(editing._id, formData);
         toast({ title: "Category updated" });
       } else {
-        await createAdminCategory(values);
+        await createAdminCategory(formData);
         toast({ title: "Category created" });
       }
       setDialogOpen(false);
@@ -149,6 +149,8 @@ function CategoriesPageContent() {
         <table className="w-full text-sm">
           <thead className="border-b bg-muted/50 text-left">
             <tr>
+              <th className="px-4 py-3 w-12">#</th>
+              <th className="px-4 py-3 w-16">Image</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Slug</th>
               <th className="px-4 py-3">Sort</th>
@@ -159,13 +161,26 @@ function CategoriesPageContent() {
           <tbody>
             {loading &&
               Array.from({ length: 4 }).map((_, i) => (
-                <tr key={i}><td colSpan={5} className="px-4 py-3"><Skeleton className="h-6 w-full" /></td></tr>
+                <tr key={i}><td colSpan={7} className="px-4 py-3"><Skeleton className="h-6 w-full" /></td></tr>
               ))}
             {!loading && items.length === 0 && (
-              <tr><td colSpan={5}><EmptyState title="No categories found" /></td></tr>
+              <tr><td colSpan={7}><EmptyState title="No categories found" /></td></tr>
             )}
-            {!loading && items.map((item) => (
+            {!loading && items.map((item, idx) => (
               <tr key={item._id} className="border-b">
+                <td className="px-4 py-3 text-muted-foreground">{(page - 1) * 10 + idx + 1}</td>
+                <td className="px-4 py-3">
+                  <div className="flex size-11 items-center justify-center overflow-hidden rounded-lg border bg-muted">
+                    {(() => {
+                      const url = getImageUrl(item as { image?: Category["image"] });
+                      return url ? (
+                        <img src={url} alt={item.name} className="size-full object-cover" />
+                      ) : (
+                        <ImageIcon className="size-5 text-muted-foreground" />
+                      );
+                    })()}
+                  </div>
+                </td>
                 <td className="px-4 py-3 font-medium">{item.name}</td>
                 <td className="px-4 py-3 text-muted-foreground">{item.slug}</td>
                 <td className="px-4 py-3">{item.sortOrder}</td>
