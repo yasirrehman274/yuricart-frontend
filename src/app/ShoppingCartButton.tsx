@@ -1,6 +1,6 @@
 "use client";
 
-import CheckoutButton from "@/components/CheckoutButton";
+import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -14,10 +14,17 @@ import {
   useRemoveCartItem,
   useUpdateCartItemQuantity,
 } from "@/hooks/cart";
-import { LegacyCart, LegacyCartLineItem } from "@/lib/cart/cart-store";
+import {
+  LegacyCart,
+  LegacyCartLineItem,
+  useCartStore,
+} from "@/lib/cart/cart-store";
 import { Loader2, ShoppingCartIcon, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCartDrawer } from "@/components/ui/CartDrawerContext";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface ShoppingCartButtonProps {
   initialData: LegacyCart | null;
@@ -26,15 +33,28 @@ interface ShoppingCartButtonProps {
 export default function ShoppingCartButton({
   initialData,
 }: ShoppingCartButtonProps) {
+  const router = useRouter();
+  const { toast } = useToast();
   const { isOpen, openDrawer, closeDrawer } = useCartDrawer();
+  const [checkoutPending, setCheckoutPending] = useState(false);
+  const items = useCartStore((s) => s.items);
 
   const cartQuery = useCart(initialData);
 
-  const totalQuantity =
-    cartQuery.data?.lineItems?.reduce(
-      (acc, item) => acc + (item.quantity || 0),
-      0,
-    ) || 0;
+  const totalQuantity = items.reduce(
+    (acc, item) => acc + (item.quantity || 0),
+    0,
+  );
+
+  function handleCheckout() {
+    if (!items.length) {
+      toast({ variant: "destructive", description: "Your cart is empty." });
+      return;
+    }
+    closeDrawer();
+    setCheckoutPending(true);
+    router.push("/checkout");
+  }
 
   return (
     <>
@@ -91,6 +111,13 @@ export default function ShoppingCartButton({
               </div>
             )}
           </div>
+          <Link
+            href="/shop"
+            className="text-center text-sm text-primary hover:underline"
+            onClick={closeDrawer}
+          >
+            Continue Shopping
+          </Link>
           <hr />
           <div className="flex items-center justify-between gap-5">
             <div className="space-y-0.5">
@@ -102,10 +129,14 @@ export default function ShoppingCartButton({
                 Shipping and taxes calculated at checkout
               </p>
             </div>
-            <CheckoutButton
+            <LoadingButton
+              onClick={handleCheckout}
+              loading={checkoutPending}
               size="lg"
-              disabled={!totalQuantity || cartQuery.isFetching}
-            />
+              disabled={!totalQuantity}
+            >
+              Checkout
+            </LoadingButton>
           </div>
         </SheetContent>
       </Sheet>

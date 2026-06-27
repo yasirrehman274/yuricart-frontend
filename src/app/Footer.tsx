@@ -10,7 +10,11 @@ export default function Footer() {
             <div className="text-2xl font-bold text-center">Yuricart</div>
             <div className="mt-7 text-base leading-relaxed text-muted-foreground text-center">
               <p>
-                🏬 The Bazaar plaza along Moi Avenue, 1st floor A02, Nairobi CBD
+                The Bazaar Plaza,<br />
+                Along Moi Avenue,<br />
+                1st Floor A02,<br />
+                Nairobi CBD,<br />
+                Kenya
               </p>
               <p className="mt-4">
                 <a href="https://wa.me/254768054542"

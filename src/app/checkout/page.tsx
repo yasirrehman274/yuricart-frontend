@@ -33,7 +33,6 @@ export default function CheckoutPage() {
     phone: "",
     address: "",
     city: "",
-    county: "",
     postalCode: "",
     notes: "",
   });
@@ -58,6 +57,7 @@ export default function CheckoutPage() {
       const order = await createOrder(
         {
           ...form,
+          county: "Kenya",
           paymentMethod,
           items: items.map((item) => ({
             productId: item.productId,
@@ -82,7 +82,12 @@ export default function CheckoutPage() {
 
   return (
     <main className="mx-auto max-w-3xl space-y-8 px-5 py-10">
-      <h1 className="text-3xl font-bold">Checkout</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Checkout</h1>
+        <Button variant="outline" asChild>
+          <a href="/shop">Continue Shopping</a>
+        </Button>
+      </div>
 
       <section className="space-y-3 rounded-lg border p-5">
         <h2 className="text-lg font-semibold">Order summary</h2>
@@ -152,14 +157,6 @@ export default function CheckoutPage() {
               required
               value={form.city}
               onChange={(e) => setForm({ ...form, city: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="county">County</Label>
-            <Input
-              id="county"
-              value={form.county}
-              onChange={(e) => setForm({ ...form, county: e.target.value })}
             />
           </div>
         </div>
