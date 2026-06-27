@@ -31,6 +31,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/logonew.svg", // Path to your favicon
   },
+  metadataBase: new URL("https://www.yuricart.com/"),
   openGraph: {
     title: "Yuricart",
     description:
